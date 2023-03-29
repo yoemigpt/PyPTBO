@@ -1,4 +1,4 @@
-import torch
+from torch import empty, arange
 from torch import Tensor
 from torch.nn import Module
 from torch.autograd import Function
@@ -32,8 +32,8 @@ class PerturbedLossFunction(Function):
     def forward(ctx, theta: Tensor, y: Tensor, oracle: Oracle, rnd: Perturbation, loss: Loss, n_samples: int) -> Tensor:
         device = theta.device
         eta = rnd.sample(theta, n_samples=n_samples)
-        pi = torch.empty(*eta.size()[:2], *oracle.outputs, device=device)
-        losses = torch.empty(*eta.size()[:2], device=device)
+        pi = empty(*eta.size()[:2], *oracle.outputs, device=device)
+        losses = empty(*eta.size()[:2], device=device)
         for i in range(eta.size(0)):
             for j in range(eta.size(1)):
                 pi[i, j] = oracle.solve(eta[i, j])
@@ -47,9 +47,9 @@ class PerturbedLossFunction(Function):
         theta, eta, _, losses = ctx.saved_tensors
         rnd = ctx.rnd
         dlog = rnd.dlog(theta, eta)
-        dlog = dlog.permute(*torch.arange(dlog.ndim).flip(0))
-        losses = losses.permute(*torch.arange(losses.ndim).flip(0))
+        dlog = dlog.permute(*arange(dlog.ndim).flip(0))
+        losses = losses.permute(*arange(losses.ndim).flip(0))
         grad = dlog * losses
-        grad = grad.permute(*torch.arange(grad.ndim).flip(0))
+        grad = grad.permute(*arange(grad.ndim).flip(0))
         grad = grad.mean(dim=0)
         return grad, None, None, None, None, None
