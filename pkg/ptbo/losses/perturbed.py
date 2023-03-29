@@ -4,8 +4,8 @@ from torch.nn import Module
 from torch.autograd import Function
 from torch.nn.modules.loss import _Loss as Loss
 
-from perturbations import Perturbation
-from oracles import Oracle
+from ptbo.random import Perturbation
+from ptbo.oracles import Oracle
 
 class PerturbedLoss(Module):
     def __init__(self, oracle: Oracle, rnd: Perturbation, loss: Loss, n_samples: int = 100) -> None:
@@ -47,9 +47,9 @@ class PerturbedLossFunction(Function):
         theta, eta, _, losses = ctx.saved_tensors
         rnd = ctx.rnd
         dlog = rnd.dlog(theta, eta)
-        dlog = dlog.permute(torch.arange(dlog.ndim).flip(0))
-        losses = losses.permute(torch.arange(losses.ndim).flip(0))
-        grad = rnd.dlog(theta, eta) * losses
-        grad = grad.permute(torch.arange(grad.ndim).flip(0))
+        dlog = dlog.permute(*torch.arange(dlog.ndim).flip(0))
+        losses = losses.permute(*torch.arange(losses.ndim).flip(0))
+        grad = dlog * losses
+        grad = grad.permute(*torch.arange(grad.ndim).flip(0))
         grad = grad.mean(dim=0)
         return grad, None, None, None, None, None
