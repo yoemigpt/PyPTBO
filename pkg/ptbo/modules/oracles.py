@@ -12,5 +12,12 @@ class Oracle(ABC):
         self.outputs = outputs
     
     @abstractmethod
-    def solve(self, eta: Tensor) -> Tensor:
+    def call(self, eta: Tensor) -> Tensor:
         pass
+
+class RankingOracle(Oracle):
+    def __init__(self, inputs: int | Size, outputs: int | Size) -> None:
+        super().__init__(inputs, inputs)
+    
+    def call(self, eta: Tensor) -> Tensor:
+        return eta.argsort(dim=0, descending=True).long()

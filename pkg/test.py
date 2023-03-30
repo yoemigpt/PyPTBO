@@ -2,14 +2,15 @@ from torch import log2, arange
 from torch.optim import Adam
 from torch.nn import Linear
 from torch.utils.data import DataLoader
-from ptbo.random import NormalPerturbation
-from ptbo.applications.ltr import NDCGLoss, RankingOracle
-from ptbo.losses import PerturbedLoss
 
-from ptbo.applications.ltr.datasets import Sushi
+from ptbo import NormalPerturbation
+from ptbo import PerturbedLoss, NDCGLoss
+from ptbo import RankingOracle
+
+from ptbo.datasets import salr
 
 if __name__ == "__main__":
-    dataset = Sushi()
+    dataset = salr.Wine()
     dataloader = DataLoader(dataset, batch_size=8, shuffle=True)
 
     n = dataset[0][0].size(0)
@@ -21,8 +22,8 @@ if __name__ == "__main__":
     ndgloss = NDCGLoss(weight)
 
     oracle = RankingOracle(inputs=m, outputs=m)
-    rnd = NormalPerturbation()
-    perturbed_loss = PerturbedLoss(oracle, rnd, ndgloss)
+    ptb = NormalPerturbation()
+    perturbed_loss = PerturbedLoss(oracle, ptb, ndgloss)
 
     for epoch in range(10):
         mean_loss = 0
@@ -34,4 +35,5 @@ if __name__ == "__main__":
             mean_loss += loss.item()
             loss.backward()
             optimizer.step()
-        print(f"Epoch {epoch + 1}: loss={mean_loss / len(dataloader):.4f}")
+        mean_loss /= len(dataloader)
+        print(f"Epoch {epoch + 1:3}: loss={mean_loss:.4f}")
