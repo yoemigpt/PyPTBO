@@ -46,10 +46,9 @@ class PerturbedLossFunction(Function):
     def backward(ctx, grad_output):
         theta, eta, _, losses = ctx.saved_tensors
         rnd = ctx.rnd
-        dlog = rnd.dlog(theta, eta)
-        dlog = dlog.permute(*arange(dlog.ndim).flip(0))
-        losses = losses.permute(*arange(losses.ndim).flip(0))
-        grad = dlog * losses
-        grad = grad.permute(*arange(grad.ndim).flip(0))
+        grad = rnd.dlog(theta, eta)
+        for i in range(grad.size(0)):
+            for j in range(grad.size(1)):
+                grad[i, j] *= losses[i, j]
         grad = grad.mean(dim=0)
         return grad, None, None, None, None, None

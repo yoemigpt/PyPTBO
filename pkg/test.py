@@ -11,7 +11,7 @@ if __name__ == "__main__":
     model = torch.nn.Linear(X.size(1), y.size(1))
     optimizer = Adam(model.parameters(), lr=0.01)
 
-    weight = 1. / torch.log(2 + torch.arange(y.size(1), dtype=torch.float))
+    weight = 1. / torch.log2(2 + torch.arange(y.size(1), dtype=torch.float))
     ndgloss = NDGCLoss(weight)
 
     oracle = RankingOracle(torch.Size([y.size(1)]), torch.Size([y.size(1)]))

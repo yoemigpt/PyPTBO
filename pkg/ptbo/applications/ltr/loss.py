@@ -17,6 +17,6 @@ class NDGCLoss(_WeightedLoss):
         dcg = empty(perm.size(0), device=device)
         for i in range(perm.size(0)):
             dcg[i] = (w * rel[i, perm[i]]).sum()
-        sorted_rel = rel.sort(dim=1)[0]
+        sorted_rel = rel.sort(dim=1, descending=True)[0]
         N = (w * sorted_rel).sum(dim=1)
         return 1 - dcg / N
