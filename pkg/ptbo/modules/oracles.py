@@ -16,7 +16,10 @@ class Oracle(ABC):
         pass
 
 class RankingOracle(Oracle):
-    def __init__(self, inputs: int | Size, outputs: int | Size) -> None:
+    def __init__(
+        self,
+        inputs: int | Size
+    ) -> None:
         super().__init__(inputs, inputs)
     
     def call(self, eta: Tensor) -> Tensor:
