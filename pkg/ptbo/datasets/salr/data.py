@@ -16,7 +16,7 @@ def _read(path):
 def _relevance(ranking: str):
     groups = ranking.split('>')
     m = len(groups)
-    weights = 1 / np.log2(1 + np.arange(1, m + 1))
+    weights = 1 / np.log2(np.arange(2, m + 2))
     relevances = np.empty(m)
     for p, g in enumerate(groups):
         i = letters.index(g)
@@ -28,11 +28,12 @@ def _features(frame):
 
 def _relevances(series):
     rankings = series.ranking.values
-    return np.array([_relevance(r) for r in rankings], dtype=int)
+    return np.array([_relevance(r) for r in rankings])
 
 class _SalrDataset(Dataset):
     path: str
     features: Tensor
+    rankings: Tensor
     relevances: Tensor
 
     def __init__(self) -> None:

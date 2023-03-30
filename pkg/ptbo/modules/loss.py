@@ -102,7 +102,5 @@ class NDCGLoss(_WeightedLoss):
         device = perm.device
         perm = perm.long()
         w = self.weight.to(device)
-        ndcg = empty(perm.size(0), device=device)
-        for i in range(perm.size(0)):
-            ndcg[i] = ndcg_score(perm[i], rel[i], w)
+        ndcg = ndcg_score(perm, rel, w)
         return 1 - ndcg

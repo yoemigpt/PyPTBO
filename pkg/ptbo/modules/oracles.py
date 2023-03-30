@@ -23,4 +23,4 @@ class RankingOracle(Oracle):
         super().__init__(inputs, inputs)
     
     def call(self, eta: Tensor) -> Tensor:
-        return eta.argsort(dim=0, descending=True).long()
+        return eta.argsort(descending=True).long()
