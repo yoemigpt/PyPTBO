@@ -3,7 +3,7 @@ from torch.optim import Adam
 from torch.nn import Linear
 from torch.utils.data import DataLoader
 from ptbo.random import NormalPerturbation
-from ptbo.applications.ltr import NDGCLoss, RankingOracle
+from ptbo.applications.ltr import NDCGLoss, RankingOracle
 from ptbo.losses import PerturbedLoss
 
 from ptbo.applications.ltr.datasets import Sushi
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     optimizer = Adam(model.parameters(), lr=0.01)
 
     weight = 1. / log2(2 + arange(m))
-    ndgloss = NDGCLoss(weight)
+    ndgloss = NDCGLoss(weight)
 
     oracle = RankingOracle(inputs=m, outputs=m)
     rnd = NormalPerturbation()

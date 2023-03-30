@@ -1,7 +1,7 @@
 from torch import empty, Tensor
 from torch.nn.modules.loss import _WeightedLoss
 
-class NDGCLoss(_WeightedLoss):
+class NDCGLoss(_WeightedLoss):
     def __init__(self, weight: Tensor, size_average=None, reduce=None, reduction='mean'):
         super().__init__(weight, size_average, reduce, reduction)
         self.weight: Tensor
