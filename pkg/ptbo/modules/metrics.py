@@ -1,5 +1,4 @@
 from torch import empty, Tensor
-import warnings
 
 def ndcg_score(perm: Tensor, rel: Tensor, weight: Tensor):
     perm = perm.long()
